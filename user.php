@@ -26,7 +26,7 @@ $_SESSION["name"] = $name;
 //check to see if a name is supplied, if not redirect back to login.
 
 if(empty($name)) {//if a name wasn't supplied during login or if backdoor is used kick them out
-	
+
 	Header( "Location: login.php" );
 	exit();
 }
@@ -39,7 +39,7 @@ if(!empty($message)){
 $handle = fopen("messages.txt","a");
 
 //write to file
-fwrite($handle, $name . ":" . $message . "\n");
+fwrite($handle, $name . ": " . $message . "\n");
 
 //close file
 fclose($handle);
