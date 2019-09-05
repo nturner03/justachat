@@ -8,11 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     $id = uniqid();
     
-    // $insert = "INSERT INTO users (uuid, name, pass) VALUES ('$id', '$name', $pass')";
-    // $acc->query($insert);
-    echo $name;
-    echo $pass;
-    echo $id;
+    $insert = "INSERT INTO users (uuid, name, pass) VALUES ('$id', '$name', $pass')";
+    $acc->query($insert);
 }
 ?>
 <html>
