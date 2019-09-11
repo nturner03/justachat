@@ -1,88 +1,101 @@
-<?
-session_start();
+<!-- This Script is from www.lisenme.com, Coded by: lisenme team-->
 
-function loginForm(){
-    $dis = "style='display: none;'";
-    echo'
-    <div id="loginform">
-    <form action="index.php" method="post">
-        <p>Please enter your name to continue:</p>
-        <label for="name">Name:</label>
-        <input type="text" name="name" id="name" />
-        <input type="submit" name="enter" id="enter" value="Enter" />
-    </form>
-    </div>
-    ';
-}
-
-if(isset($_POST['enter'])){
-    if($_POST['name'] != ""){
-        $_SESSION['name'] = stripslashes(htmlspecialchars($_POST['name']));
-    }
-    else{
-        echo '<span class="error">Please type in a name</span>';
-    }
-}
-
-if(isset($_GET['logout'])){
-
-    //Simple exit message
-    $fp = fopen("log.html", 'a');
-    fwrite($fp, "<div class='msgln'><i>User ". $_SESSION['name'] ." has left the chat session.</i><br></div>");
-    fclose($fp);
-
-    session_destroy();
-    header("Location: index.php"); //Redirect the user
-}
-?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>Chat - Customer Module</title>
-<link type="text/css" rel="stylesheet" href="style.css" />
-</head>
 <?php
-if(!isset($_SESSION['name'])){
-    loginForm();
-}
-else{
-    $dis = "style='display: block;'";
-?>
-<div id="wrapper" <?php echo $dis; ?>>
-    <div id="menu">
-        <p class="welcome">Welcome, <b><?php echo $_SESSION['name']; ?></b></p>
-        <p class="logout"><a id="exit" href="#">Exit Chat</a></p>
-        <div style="clear:both"></div>
-    </div>
-    <div id="chatbox"></div>
+if (isset($_GET['enSubmit']) && isset($_GET['uname']) && isset($_GET['rname'])){
+	echo'<meta http-equiv="refresh" content="10">';
+	$room=$_GET['rname'];
+	$uname=$_GET['uname'];
+	if (!is_dir($room)) mkdir($room);
+	$files = scandir($room);
+	foreach ($files as $user){
+		if ($user=='.' || $user=='..') continue;
+		$handle=fopen("$room/$user",'r');
+		$time = fread($handle, filesize("$room/$user"));
+		fclose($handle);
+		if ((time()-$time)>20) unlink("$room/$user");
+	}
+	$contents='';
+	$filename="$room.txt";
+	if (file_exists($filename)){
+		$handle = fopen($filename, "r");
+		$contents = fread($handle, filesize($filename));
+		fclose($handle);
+	}
+	$handle = fopen("$room/$uname", "w");
+	fwrite($handle, time());
+	fclose($handle);
 
-    <form name="message" action="">
-        <input name="usermsg" type="text" id="usermsg" size="63" />
-        <input name="submitmsg" type="submit"  id="submitmsg" value="Send" />
-    </form>
+	$files = scandir($room);
+	$users='';
+	foreach ($files as $user) if ($user!='.' && $user!='..') $users.=$user."\n";
+
+	if (isset($_POST['Send'])){
+		$text=$_POST['txt'];
+		$contents.="$uname: $text";
+		$handle = fopen("$filename", "a");
+		fwrite($handle, "$uname: $text\n");
+		fclose($handle);
+	}
+?>
+<body OnLoad="document.myform.txt.focus()">
+<form action="" method="post" name="myform">
+<table style="border: 1px solid #000000;width: 752px" align="center">
+	<tr>
+		<td style="font-family: 'Times New Roman', Times, serif;font-size: 17pt;text-align: center;width: 537; color: #2214B9;border-style: solid;border-width: 1px; height: 350px;">
+			<textarea readonly="readonly" name="txtchat" style="width: 581px; color: #000000; height: 365px; background-color: #F4F8D1; font-family: 'times New Roman', Times, serif; font-size: 12pt;"><?php echo "Welcome to the $room chatroom...\n$contents"?> </textarea>
+		</td>
+		<td style="font-family: 'Times New Roman', Times, serif;font-size: 17pt;text-align: center;color: #2214B9;border-style: solid;border-width: 1px; height: 349px; width: 143px;">
+			<textarea readonly="readonly"  contenteditable="false"  name="txtusers" style=";width: 163px; height: 365px; background-color: #D1F8D8; font-family: 'times New Roman', Times, serif; font-size: 12pt; font-weight: bold; text-align: center;"><?php echo $users?></textarea></td>
+	</tr>
+	<tr>
+		<td style="width: 537; border-style: solid;border-width: 1px;text-align: left; height: 39px; font-size: 14pt;">
+		<textarea id="txtt"  name="txt" style="width: 581px; height: 79px; font-family: 'times New Roman', Times, serif; font-size: 12pt"></textarea></td>
+		<td style="border-style: solid;border-width: 1px; height: 39px;padding-left: 8px; width: 143px; text-align: center;">
+		<input name="Send" style="width: 118px; height: 63px; font-size: 30pt; font-family: 'Times New Roman', Times, serif; color: #19B024;" type="submit" value="Send"></td>
+	</tr>
+</table>
+</form>
+
+<?php
+}else {
+?>
+<form method="get" action="">
+<table style="border: 1px solid #000000;width: 452px" align="center">
+	<tr>
+		<td style="font-family: 'Times New Roman', Times, serif;font-size: 17pt;text-align: left; width: 432px; color: #2214B9;;border-style: solid;border-width: 1px;">Nick Name:</td>
+		<td style="border-style: solid; border-width: 1px; font-family: 'Times New Roman', Times, serif; font-size: 17pt; text-align: left; color: #2214B9; width: 430px;">
+		<input name="uname" style="font-size: medium; width: 260px; color: #B01919;"></td>
+	</tr>
+	<tr>
+		<td style="font-family: 'Times New Roman', Times, serif;font-size: 17pt;text-align: left; width: 432px; color: #2214B9;border-style: solid;border-width: 1px;">Select Room:</td>
+		<td style="border-style: solid; border-width: 1px; font-family: 'Times New Roman', Times, serif; font-size: 17pt; text-align: left; color: #2214B9; width: 430px;">
+		<select name="rname" style="width: 260px; font-size: medium; color: #B01919;">
+		<option selected="">Web developer</option>
+		<option>Web designer</option>
+		</select></td>
+	</tr>
+	<tr>
+		<td style="font-family: 'Times New Roman', Times, serif;font-size: 17pt;text-align: center; color: #2214B9; border-left-style: solid; border-left-width: 1px; border-right-style: none; border-right-width: medium; border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px; padding-top:10px;padding-bottom:10px" colspan="2">
+		<input name="enSubmit" style="width: 118px; height: 63px; font-size: 30pt; font-family: 'Times New Roman', Times, serif; color: #19B024;" type="submit" value="Enter"></td>
+	</tr>
+</table>
+</form>
+<?php
+}
+?>
+<script>
+el=document.myform.txtt
+    if (typeof el.selectionStart == "number") {
+        el.selectionStart = el.selectionEnd = el.value.length;
+    } else if (typeof el.createTextRange != "undefined") {
+        el.focus();
+        var range = el.createTextRange();
+        range.collapse(false);
+        range.select();
+    }</script>
+
+
+<div style="text-align: center">
+    <p> <a href= "http://www.lisenme.com/" style="text-decoration:none;"> Lisenme.com </a> </p>
 </div>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
-<script type="text/javascript">
-// jQuery Document
-$(document).ready(function(){
-	//If user wants to end session
-	$("#exit").click(function(){
-		var exit = confirm("Are you sure you want to end the session?");
-		if(exit==true){window.location = 'index.php?logout=true';}
-	});
-});
-
-//If user submits the form
-	$("#submitmsg").click(function(){
-		var clientmsg = $("#usermsg").val();
-		$.post("post.php", {text: clientmsg});
-		$("#usermsg").attr("value", "");
-		return false;
-	});
-</script>
-<?php
-}
-?>
 </body>
-</html>
