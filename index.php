@@ -23,6 +23,17 @@ if(isset($_POST['enter'])){
         echo '<span class="error">Please type in a name</span>';
     }
 }
+
+if(isset($_GET['logout'])){
+
+    //Simple exit message
+    $fp = fopen("log.html", 'a');
+    fwrite($fp, "<div class='msgln'><i>User ". $_SESSION['name'] ." has left the chat session.</i><br></div>");
+    fclose($fp);
+
+    session_destroy();
+    header("Location: index.php"); //Redirect the user
+}
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -55,6 +66,11 @@ else{
 <script type="text/javascript">
 // jQuery Document
 $(document).ready(function(){
+	//If user wants to end session
+	$("#exit").click(function(){
+		var exit = confirm("Are you sure you want to end the session?");
+		if(exit==true){window.location = 'index.php?logout=true';}
+	});
 });
 </script>
 <?php
