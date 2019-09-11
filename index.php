@@ -19,7 +19,7 @@ if (isset ( $_POST ['enter'] )) {
     if ($_POST ['name'] != "") {
         $_SESSION ['name'] = stripslashes ( htmlspecialchars ( $_POST ['name'] ) );
         $cb = fopen ( "log.html", 'a' );
-        fwrite ( $cb, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has joined the chat session.</i><br></div>" );
+        fwrite ( $cb, "<div class='msgln'><i>" . $_SESSION ['name'] . " has joined the chat session.</i><br></div>" );
         fclose ( $cb );
     } else {
         echo '<span class="error">Please Enter a Name</span>';
