@@ -28,7 +28,7 @@ if (isset ( $_POST ['enter'] )) {
 
 if (isset ( $_GET ['logout'] )) {
     $cb = fopen ( "log.html", 'a' );
-    fwrite ( $cb, "<div class='msgln'><i> . $_SESSION ['name'] . " has left the chat session.</i><br></div>" );
+    fwrite ( $cb, "<div class='msgln'><i>" . $_SESSION ['name'] . " has left the chat session.</i><br></div>" );
     fclose ( $cb );
     session_destroy ();
     header ( "Location: index.php" );
