@@ -14,7 +14,7 @@ function loginForm() {
 	</div>
    ';
 }
- 
+
 if (isset ( $_POST ['enter'] )) {
     if ($_POST ['name'] != "") {
         $_SESSION ['name'] = stripslashes ( htmlspecialchars ( $_POST ['name'] ) );
@@ -25,7 +25,7 @@ if (isset ( $_POST ['enter'] )) {
         echo '<span class="error">Please Enter a Name</span>';
     }
 }
- 
+
 if (isset ( $_GET ['logout'] )) {
     $cb = fopen ( "log.html", 'a' );
     fwrite ( $cb, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has left the chat session.</i><br></div>" );
@@ -50,8 +50,8 @@ if (isset ( $_GET ['logout'] )) {
 ?>
 <div id="wrapper">
 	<div id="menu">
-	<h1>Live Chat!</h1><hr/>
-		<p class="welcome"><b>HI - <a><?php echo $_SESSION['name']; ?></a></b></p>
+	<h1>Chat</h1><hr/>
+		<p class="welcome"><b>Welcome, <a><?php echo $_SESSION['name']; ?></a></b></p>
 		<p class="logout"><a id="exit" href="#" class="btn btn-default">Exit Live Chat</a></p>
 	<div style="clear: both"></div>
 	</div>
@@ -77,27 +77,27 @@ $(document).ready(function(){
 $(document).ready(function(){
     $("#exit").click(function(){
         var exit = confirm("Are You Sure You Want To Leave This Page?");
-        if(exit==true){window.location = 'index.php?logout=true';}     
+        if(exit==true){window.location = 'index.php?logout=true';}
     });
 });
 $("#submitmsg").click(function(){
         var clientmsg = $("#usermsg").val();
-        $.post("post.php", {text: clientmsg});             
+        $.post("post.php", {text: clientmsg});
         $("#usermsg").attr("value", "");
         loadLog;
     return false;
 });
-function loadLog(){    
+function loadLog(){
     var oldscrollHeight = $("#chatbox").attr("scrollHeight") - 20;
     $.ajax({
         url: "log.html",
         cache: false,
-        success: function(html){       
-            $("#chatbox").html(html);       
+        success: function(html){
+            $("#chatbox").html(html);
             var newscrollHeight = $("#chatbox").attr("scrollHeight") - 20;
             if(newscrollHeight > oldscrollHeight){
                 $("#chatbox").animate({ scrollTop: newscrollHeight }, 'normal');
-            }              
+            }
         },
     });
 }
