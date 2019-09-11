@@ -2,6 +2,7 @@
 session_start();
 
 function loginForm(){
+    $dis = "style='display: none;'";
     echo'
     <div id="loginform">
     <form action="index.php" method="post">
@@ -35,8 +36,9 @@ if(!isset($_SESSION['name'])){
     loginForm();
 }
 else{
+    $dis = "style='display: block;'";
 ?>
-<div id="wrapper">
+<div id="wrapper" <?php echo $dis; ?>>
     <div id="menu">
         <p class="welcome">Welcome, <b><?php echo $_SESSION['name']; ?></b></p>
         <p class="logout"><a id="exit" href="#">Exit Chat</a></p>
